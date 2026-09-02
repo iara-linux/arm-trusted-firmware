@@ -130,6 +130,10 @@ void __no_pauth bl31_main(u_register_t arg0, u_register_t arg1, u_register_t arg
 	/* Init per-world context registers */
 	cm_manage_extensions_per_world();
 
+	NOTICE("-----------------------------------\n");
+	NOTICE("BL31: This is iara-linux TF-A\n");
+	NOTICE("BL31: https://github.com/iara-linux\n");
+	NOTICE("-----------------------------------\n");
 	NOTICE("BL31: %s\n", build_version_string);
 	NOTICE("BL31: %s\n", build_message);
 

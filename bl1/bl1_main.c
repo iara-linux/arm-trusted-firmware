@@ -75,6 +75,10 @@ void __no_pauth bl1_main(void)
 
 	/* Announce our arrival */
 	NOTICE(FIRMWARE_WELCOME_STR);
+	NOTICE("----------------------------------\n");
+	NOTICE("BL1: This is iara-linux TF-A\n");
+	NOTICE("BL1: https://github.com/iara-linux\n");
+	NOTICE("----------------------------------\n");
 	NOTICE("BL1: %s\n", build_version_string);
 	NOTICE("BL1: %s\n", build_message);
 

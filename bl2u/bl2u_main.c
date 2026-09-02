@@ -28,6 +28,10 @@
  ******************************************************************************/
 void bl2u_main(void)
 {
+	NOTICE("-----------------------------------\n");
+	NOTICE("BL2U: This is iara-linux TF-A\n");
+	NOTICE("BL2U: https://github.com/iara-linux\n");
+	NOTICE("-----------------------------------\n");
 	NOTICE("BL2U: %s\n", build_version_string);
 	NOTICE("BL2U: %s\n", build_message);
 

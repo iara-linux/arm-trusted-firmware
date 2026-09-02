@@ -73,6 +73,10 @@ void __no_pauth bl2_main(u_register_t arg0, u_register_t arg1, u_register_t arg2
 	PMF_CAPTURE_TIMESTAMP(bl_svc, BL2_ENTRY, PMF_CACHE_MAINT);
 #endif
 
+	NOTICE("----------------------------------\n");
+	NOTICE("BL2: This is iara-linux TF-A\n");
+	NOTICE("BL2: https://github.com/iara-linux\n");
+	NOTICE("----------------------------------\n");
 	NOTICE("BL2: %s\n", build_version_string);
 	NOTICE("BL2: %s\n", build_message);
 

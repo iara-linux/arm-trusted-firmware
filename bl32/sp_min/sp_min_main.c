@@ -191,6 +191,10 @@ void sp_min_setup(u_register_t arg0, u_register_t arg1, u_register_t arg2,
  *****************************************************************************/
 void sp_min_main(void)
 {
+	NOTICE("-------------------------------------\n");
+	NOTICE("SP_MIN: This is iara-linux TF-A\n");
+	NOTICE("SP_MIN: https://github.com/iara-linux\n");
+	NOTICE("-------------------------------------\n");
 	NOTICE("SP_MIN: %s\n", build_version_string);
 	NOTICE("SP_MIN: %s\n", build_message);
 

@@ -29,6 +29,10 @@
  ******************************************************************************/
 uint64_t tsp_main(void)
 {
+	NOTICE("----------------------------------\n");
+	NOTICE("TSP: This is iara-linux TF-A\n");
+	NOTICE("TSP: https://github.com/iara-linux\n");
+	NOTICE("----------------------------------\n");
 	NOTICE("TSP: %s\n", build_version_string);
 	NOTICE("TSP: %s\n", build_message);
 	INFO("TSP: Total memory base : 0x%lx\n", (unsigned long) BL32_BASE);
