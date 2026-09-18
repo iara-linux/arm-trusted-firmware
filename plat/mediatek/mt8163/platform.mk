@@ -14,6 +14,7 @@ TRNG_SUPPORT := 1
 PLAT_INCLUDES		:=	-I${MTK_PLAT}/common/				\
 				-I${MTK_PLAT}/include/				\
 				-Iinclude/plat/arm/common/aarch64		\
+				-I${MTK_PLAT_SOC}/drivers/devapc/		\
 				-I${MTK_PLAT_SOC}/drivers/devinfo/		\
 				-I${MTK_PLAT_SOC}/drivers/l2c/			\
 				-I${MTK_PLAT_SOC}/drivers/mtcmos/		\
@@ -42,6 +43,7 @@ BL31_SOURCES		+=	drivers/arm/gic/common/gic_common.c		\
 				${MTK_PLAT}/common/mtk_plat_common.c		\
 				${MTK_PLAT_SOC}/aarch64/plat_helpers.S		\
 				${MTK_PLAT_SOC}/aarch64/platform_common.c	\
+				${MTK_PLAT_SOC}/drivers/devapc/devapc.c		\
 				${MTK_PLAT_SOC}/drivers/devinfo/devinfo.c	\
 				${MTK_PLAT_SOC}/drivers/l2c/l2c.c		\
 				${MTK_PLAT}/drivers/pmic_wrap/pmic_wrap_init.c	\

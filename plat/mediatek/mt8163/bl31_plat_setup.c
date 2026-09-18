@@ -19,6 +19,7 @@
 #include <plat/common/platform.h>
 
 #include <bootargs.h>
+#include <devapc.h>
 #include <l2c.h>
 #include <pmic.h>
 #include <mtcmos.h>
@@ -200,6 +201,9 @@ void bl31_platform_setup(void)
 	/* Initialize the gic cpu and distributor interfaces */
 	plat_arm_gic_driver_init();
 	plat_arm_gic_init();
+
+	/* Configure peripherals access permissions */
+	devapc_init();
 
 	/* Initialize hardware peripherals */
 	pmic_probe();

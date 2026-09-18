@@ -19,7 +19,7 @@
 #define SPM_BASE		(IO_PHYS + 0x6000)
 #define RGU_BASE		(IO_PHYS + 0x7000)
 #define PMIC_WRAP_BASE		(IO_PHYS + 0xD000)
-#define DEVAPC0_BASE		(IO_PHYS + 0xE000)
+#define DEVAPC_AO_BASE		(IO_PHYS + 0xE000)
 #define MCUCFG_BASE		(IO_PHYS + 0x200000)
 #define APMIXED_BASE		(IO_PHYS + 0x209000)
 #define TRNG_BASE		(IO_PHYS + 0x20F000)
@@ -53,8 +53,11 @@
 /*******************************************************************************
  * DEVAPC related constants
  ******************************************************************************/
-#define DEVAPC0_MAS_SEC_0	(DEVAPC0_BASE + 0x500)
-#define DEVAPC0_APC_CON		(DEVAPC0_BASE + 0xF00)
+#define DEVAPC_D0_APC_0			(DEVAPC_AO_BASE + 0x0000)
+#define DEVAPC_APC_CON			(DEVAPC_AO_BASE + 0x0F00)
+#define MOD_NO_IN_1_DEVAPC		16
+#define DEVAPC_APC_CON_EN		(0x1 << 0)
+#define DEVAPC_DOMAIN_STRIDE		0x100
 
 /*******************************************************************************
  * MD32 related constants
