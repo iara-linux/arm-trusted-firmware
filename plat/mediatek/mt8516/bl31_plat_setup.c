@@ -19,7 +19,6 @@
 #include <plat/common/common_def.h>
 #include <plat/common/platform.h>
 
-#include <bootargs.h>
 #include <l2c.h>
 #include <mtk_plat_common.h>
 #include <mtspmc.h>
@@ -62,42 +61,6 @@ entry_point_info_t *bl31_plat_get_next_image_ep_info(uint32_t type)
 		return NULL;
 }
 
-/******************************************************************************
- * Gets SPSR for BL32 entry
- *****************************************************************************/
-static uint32_t mtk_get_spsr_for_bl32_entry(void)
-{
-	/*
-	 * The Secure Payload Dispatcher service is responsible for
-	 * setting the SPSR prior to entry into the BL32 image.
-	 */
-	return 0;
-}
-
-/******************************************************************************
- * Gets SPSR for BL33 entry
- *****************************************************************************/
-static uint32_t mtk_get_spsr_for_bl33_entry(void)
-{
-	unsigned long el_status;
-	unsigned int mode;
-	uint32_t spsr;
-
-	/* Figure out what mode we enter the non-secure world in */
-	el_status = read_id_aa64pfr0_el1() >> ID_AA64PFR0_EL2_SHIFT;
-	el_status &= ID_AA64PFR0_ELX_MASK;
-
-	mode = (el_status) ? MODE_EL2 : MODE_EL1;
-
-	/*
-	 * TODO: Consider the possibility of specifying the SPSR in
-	 * the FIP ToC and allowing the platform to have a say as
-	 * well.
-	 */
-	spsr = SPSR_64(mode, MODE_SP_ELX, DISABLE_ALL_EXCEPTIONS);
-	return spsr;
-}
-
 /*******************************************************************************
  * Perform any BL31 early platform setup. Here is an opportunity to copy
  * parameters passed by the calling EL (S-EL1 in BL2 & S-EL3 in BL1) before they
@@ -110,8 +73,6 @@ void bl31_early_platform_setup2(u_register_t arg0, u_register_t arg1,
 				u_register_t arg2, u_register_t arg3)
 {
 	static console_t console;
-	const struct mtk_bl_param *pl_args;
-	const struct mt_atf_args *args;
 
 	l2c_configure_caches();
 
@@ -121,57 +82,7 @@ void bl31_early_platform_setup2(u_register_t arg0, u_register_t arg1,
 	INFO("PMIC: This BL31 is not built with PMIC support.\n");
 #endif
 
-	pl_args = (const struct mtk_bl_param *)((uint64_t)arg0 & 0xffffffff);
-	args = (const struct mt_atf_args *)pl_args->tee_info_addr;
-
-	/* Set-up the BL32 entry point if provided. */
-	zeromem(&bl32_ep_info, sizeof(bl32_ep_info));
-	SET_PARAM_HEAD(&bl32_ep_info, PARAM_EP, VERSION_1, 0);
-	SET_SECURITY_STATE(bl32_ep_info.h.attr, SECURE);
-
-	/* If we have valid args passed by PL, use them. */
-	if (args && args->tee_support && args->tee_entry) {
-		INFO("PL: BL32 entry address from Preloader: 0x%08x\n", args->tee_entry);
-		bl32_ep_info.pc = args->tee_entry;
-	} else {
-		INFO("PL: BL32 entry address not provided, use 0x%08x\n",
-		     (uint32_t)PRELOADED_BL32_BASE);
-		bl32_ep_info.pc = PRELOADED_BL32_BASE;
-	}
-
-	if (bl32_ep_info.pc == 0)
-		INFO("BL31: Running without BL32.\n");
-
-	/*
-	 * Set-up the BL33 entry point, fall back to our defaults if PL
-	 * doesn't provide one.
-	 */
-	zeromem(&bl33_ep_info, sizeof(bl33_ep_info));
-	SET_PARAM_HEAD(&bl33_ep_info, PARAM_EP, VERSION_1, 0);
-	SET_SECURITY_STATE(bl33_ep_info.h.attr, NON_SECURE);
-
-	if (pl_args->bl33_start_addr >= DRAM_BASE) {
-		INFO("PL: BL33 entry address from Preloader: 0x%" PRIx64 "\n", pl_args->bl33_start_addr);
-		bl33_ep_info.pc = pl_args->bl33_start_addr;
-	} else {
-		WARN("PL: Bad address for BL33 entry (0x%" PRIx64 "), use 0x%08x\n",
-		     pl_args->bl33_start_addr, (uint32_t)PRELOADED_BL33_BASE);
-		bl33_ep_info.pc = PRELOADED_BL33_BASE;
-	}
-
-	/* Hand the Preloader's boot arguments down to BL33. */
-	if ((pl_args->bootarg_loc >= DRAM_BASE) && (pl_args->bootarg_size != 0U)) {
-		bl33_ep_info.args.arg4 = (u_register_t)pl_args->bootarg_loc;
-		bl33_ep_info.args.arg5 = (u_register_t)pl_args->bootarg_size;
-		INFO("PL: Preloader boot arguments: 0x%" PRIx64 " sz 0x%" PRIx64 "\n",
-		     pl_args->bootarg_loc, pl_args->bootarg_size);
-	} else {
-		WARN("PL: Bad size or address for PL bootargs (0x%" PRIx64 " size 0x%" PRIx64 ")\n",
-		     pl_args->bootarg_loc, pl_args->bootarg_size);
-	}
-
-	bl32_ep_info.spsr = mtk_get_spsr_for_bl32_entry();
-	bl33_ep_info.spsr = mtk_get_spsr_for_bl33_entry();
+	bl31_params_parse_helper(arg0, &bl32_ep_info, &bl33_ep_info);
 }
 
 /*******************************************************************************
